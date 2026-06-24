@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="screen_padding">16dp</dimen>
+    <dimen name="search_bar_height">52dp</dimen>
+    <dimen name="search_bar_radius">26dp</dimen>
+    <dimen name="chip_radius">18dp</dimen>
+    <dimen name="result_icon">44dp</dimen>
+
+    <!-- Widget -->
+    <dimen name="widget_radius">22dp</dimen>
+    <dimen name="widget_padding">14dp</dimen>
+    <dimen name="widget_search_height">42dp</dimen>
+    <dimen name="widget_min_width">250dp</dimen>
+    <dimen name="widget_min_height">110dp</dimen>
+</resources>

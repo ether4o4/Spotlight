@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 2x4 home-screen widget. RemoteViews-compatible views only. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_bg"
+    android:orientation="vertical"
+    android:padding="@dimen/widget_padding">
+
+    <!-- Brand, pinned top-right -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/app_name"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.04" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/brand"
+            android:textColor="@color/neversoft_red"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Search pill -->
+    <LinearLayout
+        android:id="@+id/widgetSearchBar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/widget_search_height"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/widget_search_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="12dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:contentDescription="@string/search"
+            android:src="@drawable/ic_search" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/search_hint"
+            android:textColor="@color/text_hint"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- Primary filter chips -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <TextView
+            android:id="@+id/widgetFilterAll"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/widget_chip_bg_accent"
+            android:gravity="center"
+            android:maxLines="1"
+            android:paddingVertical="7dp"
+            android:text="@string/filter_all"
+            android:textColor="@color/chip_text_selected"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/widgetFilterMedia"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/widget_chip_bg"
+            android:gravity="center"
+            android:maxLines="1"
+            android:paddingVertical="7dp"
+            android:text="@string/filter_media"
+            android:textColor="@color/chip_text_unselected"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/widgetFilterFiles"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/widget_chip_bg"
+            android:gravity="center"
+            android:maxLines="1"
+            android:paddingVertical="7dp"
+            android:text="@string/filter_files"
+            android:textColor="@color/chip_text_unselected"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/widgetFilterHidden"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/widget_chip_bg"
+            android:gravity="center"
+            android:maxLines="1"
+            android:paddingVertical="7dp"
+            android:text="@string/filter_hidden"
+            android:textColor="@color/chip_text_unselected"
+            android:textSize="12sp" />
+    </LinearLayout>
+</LinearLayout>
