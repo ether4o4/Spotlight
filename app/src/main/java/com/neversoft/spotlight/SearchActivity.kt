@@ -66,12 +66,10 @@ class SearchActivity : AppCompatActivity() {
         requestRuntimePermissionsIfNeeded()
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        if (intent != null) {
-            setIntent(intent)
-            applyIntent(intent)
-        }
+        setIntent(intent)
+        applyIntent(intent)
     }
 
     override fun onResume() {
