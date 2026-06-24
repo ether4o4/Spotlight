@@ -1,10 +1,13 @@
 package com.neversoft.spotlight.search
 
+import android.Manifest
 import android.content.ContentUris
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import androidx.core.content.ContextCompat
 import com.neversoft.spotlight.model.LaunchAction
 import com.neversoft.spotlight.model.ResultType
 import com.neversoft.spotlight.model.SearchResult
@@ -36,8 +39,11 @@ class FileSearchProvider(private val context: Context) {
     fun hasFullAccess(): Boolean = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         Environment.isExternalStorageManager()
     } else {
-        // Legacy READ_EXTERNAL_STORAGE is requested at runtime on these versions.
-        true
+        // Pre-R: a denied READ_EXTERNAL_STORAGE makes walk() unable to read shared
+        // storage, so gate on the actual runtime grant — not on having requested it.
+        ContextCompat.checkSelfPermission(
+            context, Manifest.permission.READ_EXTERNAL_STORAGE,
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     fun search(
@@ -51,7 +57,7 @@ class FileSearchProvider(private val context: Context) {
         return if (hasFullAccess()) {
             walk(query, spec, limit, deadlineMs, isActive, scope)
         } else {
-            queryMediaStoreFiles(query, spec, limit, isActive)
+            queryMediaStoreFiles(query, spec, limit, isActive, scope)
         }
     }
 
@@ -169,8 +175,10 @@ class FileSearchProvider(private val context: Context) {
         spec: FileSearchSpec,
         limit: Int,
         isActive: () -> Boolean,
+        scope: StorageScope,
     ): List<SearchResult> {
         val filesUri = MediaStore.Files.getContentUri("external")
+        @Suppress("DEPRECATION") // DATA is the only absolute-path column for scope classification.
         val projection = arrayOf(
             MediaStore.Files.FileColumns._ID,
             MediaStore.Files.FileColumns.DISPLAY_NAME,
@@ -178,6 +186,7 @@ class FileSearchProvider(private val context: Context) {
             MediaStore.Files.FileColumns.DATE_MODIFIED,
             MediaStore.Files.FileColumns.MIME_TYPE,
             MediaStore.Files.FileColumns.RELATIVE_PATH,
+            MediaStore.Files.FileColumns.DATA,
         )
         val selection = "${MediaStore.Files.FileColumns.DISPLAY_NAME} LIKE ?"
         val args = arrayOf("%$query%")
@@ -192,6 +201,9 @@ class FileSearchProvider(private val context: Context) {
                 val dateCol = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATE_MODIFIED)
                 val mimeCol = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MIME_TYPE)
                 val pathCol = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.RELATIVE_PATH)
+                @Suppress("DEPRECATION")
+                val dataCol = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA)
+                val primaryRoot = Environment.getExternalStorageDirectory()?.absolutePath
 
                 while (cursor.moveToNext()) {
                     if (!isActive() || out.size >= limit) break
@@ -201,6 +213,10 @@ class FileSearchProvider(private val context: Context) {
                     if (exts != null && FileTypes.extensionOf(name) !in exts) continue
                     val relPath = cursor.getString(pathCol) ?: ""
                     if (spec.downloadsOnly && !relPath.contains("Download", ignoreCase = true)) continue
+                    if (scope != StorageScope.ALL) {
+                        val absPath = cursor.getString(dataCol)
+                        if (absPath == null || !StorageScope.matches(scope, absPath, primaryRoot)) continue
+                    }
 
                     val id = cursor.getLong(idCol)
                     val mime = cursor.getString(mimeCol) ?: FileTypes.mimeFor(name)

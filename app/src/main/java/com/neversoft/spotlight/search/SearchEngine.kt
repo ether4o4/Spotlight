@@ -47,7 +47,7 @@ class SearchEngine(context: Context) {
                 results += contacts.search(q, 30, active)
                 ensureActive()
                 results += media.search(
-                    q, setOf(ResultType.IMAGE, ResultType.VIDEO, ResultType.AUDIO), 90, active,
+                    q, setOf(ResultType.IMAGE, ResultType.VIDEO, ResultType.AUDIO), 90, active, scope,
                 )
                 ensureActive()
                 results += files.search(
@@ -64,7 +64,7 @@ class SearchEngine(context: Context) {
                     SubFilter.AUDIO -> setOf(ResultType.AUDIO)
                     else -> setOf(ResultType.IMAGE, ResultType.VIDEO, ResultType.AUDIO)
                 }
-                results += media.search(q, types, limit, active)
+                results += media.search(q, types, limit, active, scope)
             }
 
             PrimaryFilter.FILES -> {

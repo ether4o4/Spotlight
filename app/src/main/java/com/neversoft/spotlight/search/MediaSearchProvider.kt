@@ -3,10 +3,12 @@ package com.neversoft.spotlight.search
 import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
+import android.os.Environment
 import android.provider.MediaStore
 import com.neversoft.spotlight.model.LaunchAction
 import com.neversoft.spotlight.model.ResultType
 import com.neversoft.spotlight.model.SearchResult
+import com.neversoft.spotlight.model.StorageScope
 
 /**
  * Searches the system MediaStore for photos, videos and audio by display name.
@@ -24,7 +26,9 @@ class MediaSearchProvider(private val context: Context) {
         types: Set<ResultType>,
         limit: Int,
         isActive: () -> Boolean,
+        scope: StorageScope = StorageScope.ALL,
     ): List<SearchResult> {
+        val primaryRoot = Environment.getExternalStorageDirectory()?.absolutePath
         val collections = buildList {
             if (ResultType.IMAGE in types) {
                 add(Collection(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ResultType.IMAGE))
@@ -40,7 +44,7 @@ class MediaSearchProvider(private val context: Context) {
         val out = ArrayList<SearchResult>()
         for (c in collections) {
             if (!isActive() || out.size >= limit) break
-            out += queryCollection(c, query, limit - out.size, isActive)
+            out += queryCollection(c, query, limit - out.size, isActive, scope, primaryRoot)
         }
         return out
     }
@@ -50,6 +54,8 @@ class MediaSearchProvider(private val context: Context) {
         query: String,
         limit: Int,
         isActive: () -> Boolean,
+        scope: StorageScope,
+        primaryRoot: String?,
     ): List<SearchResult> {
         @Suppress("DEPRECATION") // DATA is the one path column present on every API level (min 26).
         val projection = arrayOf(
@@ -84,6 +90,9 @@ class MediaSearchProvider(private val context: Context) {
                         val date = cursor.getLong(dateCol)
                         val mime = cursor.getString(mimeCol) ?: FileTypes.mimeFor(name)
                         val fullPath = cursor.getString(pathCol)
+                        if (scope != StorageScope.ALL &&
+                            (fullPath == null || !StorageScope.matches(scope, fullPath, primaryRoot))
+                        ) continue
                         val folder = fullPath?.substringBeforeLast('/', "")?.ifEmpty { null }
                         val itemUri = ContentUris.withAppendedId(collection.uri, id)
 
