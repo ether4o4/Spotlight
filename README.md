@@ -128,6 +128,20 @@ the command line:
 
 Then add the **Spotlight Search** widget from your launcher's widget picker.
 
-> Note: this repo was scaffolded in an environment without the Android SDK, so the
-> APK has not been compiled here — build it in Android Studio (which provides the
-> SDK). The Gradle wrapper, manifest, sources and resources are all in place.
+> Don't want to build it yourself? Every push to `main` is compiled by CI and the
+> resulting APK is published to the rolling download link below.
+
+---
+
+## Download
+
+[![Download APK](https://img.shields.io/badge/Download-Spotlight%20APK-E53935?logo=android&logoColor=white&style=for-the-badge)](https://github.com/ether4o4/Spotlight/releases/download/nightly/spotlight-debug.apk)
+
+**📲 [Download the latest Spotlight APK](https://github.com/ether4o4/Spotlight/releases/download/nightly/spotlight-debug.apk)**
+
+This is a **rolling** link — CI rebuilds the app on every push to `main` and
+re-publishes it to the `nightly` release, so the link above always serves the
+**newest** build as a direct `.apk` (no zip to unpack).
+
+> Debug-signed. On your phone, enable *Install unknown apps* for your browser or
+> file manager, then open the APK. Requires **Android 8.0+** (minSdk 26).
