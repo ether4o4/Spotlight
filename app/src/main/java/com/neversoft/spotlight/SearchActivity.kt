@@ -26,6 +26,7 @@ import com.neversoft.spotlight.databinding.ActivitySearchBinding
 import com.neversoft.spotlight.model.FilterSelection
 import com.neversoft.spotlight.model.LaunchAction
 import com.neversoft.spotlight.model.PrimaryFilter
+import com.neversoft.spotlight.model.StorageScope
 import com.neversoft.spotlight.model.SubFilter
 import com.neversoft.spotlight.search.SearchEngine
 import com.neversoft.spotlight.ui.ResultsAdapter
@@ -41,6 +42,7 @@ class SearchActivity : AppCompatActivity() {
     private val adapter = ResultsAdapter(::launchResult)
 
     private var selection = FilterSelection()
+    private var scope = StorageScope.ALL
     private var searchJob: Job? = null
 
     private val permissionLauncher =
@@ -61,6 +63,7 @@ class SearchActivity : AppCompatActivity() {
 
         setupSearchInput()
         setupPrimaryChips()
+        setupScopeChips()
         binding.backButton.setOnClickListener { finish() }
         binding.grantButton.setOnClickListener { openAllFilesSettings() }
 
@@ -142,7 +145,7 @@ class SearchActivity : AppCompatActivity() {
         }
         binding.statusText.text = getString(R.string.searching)
         searchJob = lifecycleScope.launch {
-            val results = engine.search(query, selection)
+            val results = engine.search(query, selection, scope)
             adapter.submitList(results)
             if (results.isEmpty()) {
                 showEmptyState(getString(R.string.empty_no_results, query))
@@ -211,6 +214,24 @@ class SearchActivity : AppCompatActivity() {
                 chip.isChecked = true
                 break
             }
+        }
+    }
+
+    private fun setupScopeChips() {
+        binding.scopeChips.removeAllViews()
+        for (s in StorageScope.entries) {
+            val chip = buildChip(getString(s.labelRes), null).apply {
+                tag = s
+                isChecked = s == scope
+            }
+            binding.scopeChips.addView(chip)
+        }
+        binding.scopeChips.setOnCheckedStateChangeListener { group, checkedIds ->
+            val selected = checkedIds.firstOrNull()
+                ?.let { group.findViewById<Chip>(it) }
+                ?.tag as? StorageScope ?: return@setOnCheckedStateChangeListener
+            scope = selected
+            runSearch()
         }
     }
 

@@ -120,6 +120,23 @@
             app:singleSelection="true" />
     </HorizontalScrollView>
 
+    <!-- Storage scope row (furthest -> internal) -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:scrollbars="none">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/scopeChips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:chipSpacingHorizontal="8dp"
+            app:singleLine="true"
+            app:singleSelection="true"
+            app:selectionRequired="true" />
+    </HorizontalScrollView>
+
     <!-- All-files access banner -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/permissionBanner"

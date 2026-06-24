@@ -5,6 +5,7 @@ import com.neversoft.spotlight.model.FilterSelection
 import com.neversoft.spotlight.model.PrimaryFilter
 import com.neversoft.spotlight.model.ResultType
 import com.neversoft.spotlight.model.SearchResult
+import com.neversoft.spotlight.model.StorageScope
 import com.neversoft.spotlight.model.SubFilter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
@@ -29,6 +30,7 @@ class SearchEngine(context: Context) {
     suspend fun search(
         query: String,
         selection: FilterSelection,
+        scope: StorageScope = StorageScope.ALL,
         limit: Int = DEFAULT_LIMIT,
     ): List<SearchResult> = withContext(Dispatchers.IO) {
         val q = query.trim()
@@ -51,7 +53,7 @@ class SearchEngine(context: Context) {
                 results += files.search(
                     q,
                     FileSearchSpec(includeFiles = true, includeFolders = true),
-                    160, deadline, active,
+                    160, deadline, active, scope,
                 )
             }
 
@@ -73,7 +75,7 @@ class SearchEngine(context: Context) {
                     SubFilter.APKS -> FileSearchSpec(extensions = FileTypes.APK)
                     else -> FileSearchSpec(includeFiles = true, includeFolders = true)
                 }
-                results += files.search(q, spec, limit, deadline, active)
+                results += files.search(q, spec, limit, deadline, active, scope)
             }
 
             PrimaryFilter.HIDDEN -> {
@@ -85,7 +87,7 @@ class SearchEngine(context: Context) {
                     else ->
                         FileSearchSpec(includeFiles = true, includeFolders = true, hiddenOnly = true)
                 }
-                results += files.search(q, spec, limit, deadline, active)
+                results += files.search(q, spec, limit, deadline, active, scope)
             }
         }
 
