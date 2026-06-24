@@ -16,6 +16,11 @@
     <string name="filter_files">Files</string>
     <string name="filter_hidden">Hidden</string>
 
+    <!-- Storage scope (furthest -> internal) -->
+    <string name="scope_all">Everywhere</string>
+    <string name="scope_removable">SD / USB</string>
+    <string name="scope_internal">Internal</string>
+
     <!-- Secondary (Media) -->
     <string name="sub_photos">Photos</string>
     <string name="sub_videos">Videos</string>

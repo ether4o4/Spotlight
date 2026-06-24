@@ -8,6 +8,7 @@ import android.provider.MediaStore
 import com.neversoft.spotlight.model.LaunchAction
 import com.neversoft.spotlight.model.ResultType
 import com.neversoft.spotlight.model.SearchResult
+import com.neversoft.spotlight.model.StorageScope
 import java.io.File
 import java.util.ArrayDeque
 import java.util.Locale
@@ -45,9 +46,10 @@ class FileSearchProvider(private val context: Context) {
         limit: Int,
         deadlineMs: Long,
         isActive: () -> Boolean,
+        scope: StorageScope = StorageScope.ALL,
     ): List<SearchResult> {
         return if (hasFullAccess()) {
-            walk(query, spec, limit, deadlineMs, isActive)
+            walk(query, spec, limit, deadlineMs, isActive, scope)
         } else {
             queryMediaStoreFiles(query, spec, limit, isActive)
         }
@@ -61,10 +63,14 @@ class FileSearchProvider(private val context: Context) {
         limit: Int,
         deadlineMs: Long,
         isActive: () -> Boolean,
+        scope: StorageScope,
     ): List<SearchResult> {
         val q = query.lowercase(Locale.getDefault())
         val out = ArrayList<SearchResult>()
-        val roots = storageRoots()
+        val primaryRoot = Environment.getExternalStorageDirectory()?.absolutePath
+        val roots = storageRoots().filter {
+            StorageScope.matches(scope, it.absolutePath, primaryRoot)
+        }
         val stack = ArrayDeque<File>()
         roots.forEach { if (it.isDirectory) stack.push(it) }
 
