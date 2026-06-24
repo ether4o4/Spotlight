@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Spotlight</string>
+    <string name="brand">NeverSoft Services</string>
+    <string name="widget_label">Spotlight Search</string>
+    <string name="widget_description">Search your entire device from the home screen.</string>
+
+    <string name="search_hint">Search your entire device</string>
+    <string name="search_hint_short">Search your device</string>
+    <string name="clear">Clear</string>
+    <string name="search">Search</string>
+
+    <!-- Primary filters -->
+    <string name="filter_all">All</string>
+    <string name="filter_media">Media</string>
+    <string name="filter_files">Files</string>
+    <string name="filter_hidden">Hidden</string>
+
+    <!-- Secondary (Media) -->
+    <string name="sub_photos">Photos</string>
+    <string name="sub_videos">Videos</string>
+    <string name="sub_audio">Audio</string>
+
+    <!-- Secondary (Files) -->
+    <string name="sub_documents">Documents</string>
+    <string name="sub_downloads">Downloads</string>
+    <string name="sub_archives">Archives</string>
+    <string name="sub_apks">APKs</string>
+
+    <!-- Secondary (Hidden) -->
+    <string name="sub_hidden_files">Hidden files</string>
+    <string name="sub_hidden_folders">Hidden folders</string>
+
+    <!-- Misc UI -->
+    <string name="permission_needed">Grant access to search your device</string>
+    <string name="permission_rationale">Spotlight needs storage and media access to find files, photos, videos, audio, apps and contacts across your whole phone.</string>
+    <string name="grant_access">Grant access</string>
+    <string name="grant_all_files">Allow all-files access</string>
+    <string name="empty_start">Type to search everything on your device</string>
+    <string name="empty_no_results">No results for “%1$s”</string>
+    <string name="searching">Searching…</string>
+    <string name="results_count">%1$d results</string>
+    <string name="open_with">Open with</string>
+    <string name="no_app_to_open">No app can open this item</string>
+
+    <!-- Result type labels -->
+    <string name="type_app">App</string>
+    <string name="type_image">Image</string>
+    <string name="type_video">Video</string>
+    <string name="type_audio">Audio</string>
+    <string name="type_document">Document</string>
+    <string name="type_archive">Archive</string>
+    <string name="type_apk">APK</string>
+    <string name="type_file">File</string>
+    <string name="type_folder">Folder</string>
+    <string name="type_contact">Contact</string>
+</resources>

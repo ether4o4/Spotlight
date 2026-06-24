@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.Spotlight" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/neversoft_red</item>
+        <item name="colorOnPrimary">@color/text_primary</item>
+        <item name="colorSecondary">@color/neversoft_red_bright</item>
+
+        <item name="android:colorBackground">@color/spotlight_black</item>
+        <item name="colorSurface">@color/spotlight_surface</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorOnBackground">@color/text_primary</item>
+
+        <item name="android:windowBackground">@color/spotlight_black</item>
+        <item name="android:statusBarColor">@color/spotlight_black</item>
+        <item name="android:navigationBarColor">@color/spotlight_black</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
+
+    <!-- Transparent-ish theme variant if launched as overlay (reserved). -->
+    <style name="Theme.Spotlight.Widget" parent="Theme.Spotlight" />
+</resources>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Core canvas -->
+    <color name="spotlight_black">#FF000000</color>
+    <color name="spotlight_near_black">#FF0B0B0D</color>
+    <color name="spotlight_surface">#FF161618</color>
+    <color name="spotlight_surface_variant">#FF202024</color>
+    <color name="spotlight_stroke">#FF2C2C30</color>
+
+    <!-- NeverSoft brand red -->
+    <color name="neversoft_red">#FFE5202A</color>
+    <color name="neversoft_red_bright">#FFFF3B30</color>
+    <color name="neversoft_red_dim">#FF8E1B22</color>
+
+    <!-- Text -->
+    <color name="text_primary">#FFF5F5F7</color>
+    <color name="text_secondary">#FFAEAEB2</color>
+    <color name="text_hint">#FF727276</color>
+
+    <color name="chip_text_selected">#FFFFFFFF</color>
+    <color name="chip_text_unselected">#FFC8C8CC</color>
+
+    <color name="ripple">#33FFFFFF</color>
+</resources>
