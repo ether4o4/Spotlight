@@ -6,6 +6,8 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.DocumentsContract
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
@@ -300,8 +302,7 @@ class SearchActivity : AppCompatActivity() {
     private fun openFile(path: String, mimeType: String) {
         val file = File(path)
         if (mimeType == "resource/folder" || file.isDirectory) {
-            // Best-effort: hand the folder to a file manager that understands it.
-            toast(getString(R.string.type_folder) + ": " + path)
+            openFolder(path)
             return
         }
         val uri = runCatching {
@@ -312,6 +313,45 @@ class SearchActivity : AppCompatActivity() {
             return
         }
         viewIntent(uri, mimeType)
+    }
+
+    /**
+     * Open a folder result in the system file manager. Maps the filesystem path to
+     * an ExternalStorageProvider "documents" URI (only the primary volume maps
+     * deterministically), then falls back to browsing storage, then a toast.
+     *
+     * Security: [path] comes from our own on-device file walk, not untrusted input,
+     * so there is no traversal/injection surface; we hand off via ACTION_VIEW and
+     * never expose our own FileProvider here.
+     */
+    private fun openFolder(path: String) {
+        val authority = "com.android.externalstorage.documents"
+        val primaryRoot = Environment.getExternalStorageDirectory()?.absolutePath
+
+        if (primaryRoot != null && path.startsWith(primaryRoot)) {
+            val relative = path.removePrefix(primaryRoot).trim('/')
+            val documentUri = runCatching {
+                DocumentsContract.buildDocumentUri(authority, "primary:$relative")
+            }.getOrNull()
+            if (documentUri != null) {
+                val view = Intent(Intent.ACTION_VIEW).apply {
+                    setDataAndType(documentUri, DocumentsContract.Document.MIME_TYPE_DIR)
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                if (launchOrNull(view)) return
+            }
+        }
+
+        // Fall back to opening the storage root in a documents browser.
+        val browseRoot = Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(
+                DocumentsContract.buildRootUri(authority, "primary"),
+                "vnd.android.document/root",
+            )
+        }
+        if (launchOrNull(browseRoot)) return
+
+        toast(getString(R.string.type_folder) + ": " + path)
     }
 
     private fun viewIntent(uri: Uri, mimeType: String?) {
