@@ -41,7 +41,7 @@
     <string name="permission_rationale">Spotlight needs storage and media access to find files, photos, videos, audio, apps and contacts across your whole phone.</string>
     <string name="grant_access">Grant access</string>
     <string name="grant_all_files">Allow all-files access</string>
-    <string name="empty_start">Type to search everything on your device</string>
+    <string name="empty_start">No items to show here yet</string>
     <string name="empty_no_results">No results for “%1$s”</string>
     <string name="searching">Searching…</string>
     <string name="results_count">%1$d results</string>

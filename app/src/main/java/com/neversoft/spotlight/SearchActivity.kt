@@ -69,6 +69,9 @@ class SearchActivity : AppCompatActivity() {
 
         applyIntent(intent)
         requestRuntimePermissionsIfNeeded()
+        // Populate immediately in "browse" mode; the permission callback re-runs this
+        // once media/contacts access is granted so those results fill in too.
+        runSearch()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -137,18 +140,17 @@ class SearchActivity : AppCompatActivity() {
     private fun runSearch() {
         searchJob?.cancel()
         val query = binding.searchInput.text?.toString().orEmpty().trim()
-        if (query.isEmpty()) {
-            adapter.submitList(emptyList())
-            showEmptyState(getString(R.string.empty_start))
-            binding.statusText.text = ""
-            return
-        }
         binding.statusText.text = getString(R.string.searching)
         searchJob = lifecycleScope.launch {
             val results = engine.search(query, selection, scope)
             adapter.submitList(results)
             if (results.isEmpty()) {
-                showEmptyState(getString(R.string.empty_no_results, query))
+                val message = if (query.isEmpty()) {
+                    getString(R.string.empty_start)
+                } else {
+                    getString(R.string.empty_no_results, query)
+                }
+                showEmptyState(message)
                 binding.statusText.text = ""
             } else {
                 binding.emptyState.visibility = android.view.View.GONE
