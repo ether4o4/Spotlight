@@ -33,8 +33,10 @@ class SearchEngine(context: Context) {
         scope: StorageScope = StorageScope.ALL,
         limit: Int = DEFAULT_LIMIT,
     ): List<SearchResult> = withContext(Dispatchers.IO) {
+        // An empty query is a valid "browse" request: every provider treats it as
+        // match-all, so the list populates from the active filter + scope before the
+        // user types anything, and refreshes as filters change.
         val q = query.trim()
-        if (q.isEmpty()) return@withContext emptyList()
 
         val active = { isActive }
         val deadline = System.currentTimeMillis() + WALK_BUDGET_MS
