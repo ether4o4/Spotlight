@@ -1,0 +1,16 @@
+# Build output
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Rider / ReSharper
+.idea/
+_ReSharper*/
+
+# Publish output
+publish/
+*.zip

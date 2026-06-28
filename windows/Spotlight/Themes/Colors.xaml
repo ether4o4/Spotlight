@@ -1,0 +1,31 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Core canvas (ported from the Android colors.xml) -->
+    <SolidColorBrush x:Key="SpotlightBlack" Color="#FF000000"/>
+    <SolidColorBrush x:Key="SpotlightNearBlack" Color="#FF0B0B0D"/>
+    <SolidColorBrush x:Key="SpotlightSurface" Color="#FF161618"/>
+    <SolidColorBrush x:Key="SpotlightSurfaceVariant" Color="#FF202024"/>
+    <SolidColorBrush x:Key="SpotlightStroke" Color="#FF2C2C30"/>
+
+    <!-- Translucent surfaces for the acrylic card -->
+    <SolidColorBrush x:Key="SpotlightCardFill" Color="#E60B0B0D"/>
+    <SolidColorBrush x:Key="SpotlightSearchFill" Color="#FF1B1B1F"/>
+
+    <!-- NeverSoft brand red -->
+    <SolidColorBrush x:Key="NeverSoftRed" Color="#FFE5202A"/>
+    <SolidColorBrush x:Key="NeverSoftRedBright" Color="#FFFF3B30"/>
+    <SolidColorBrush x:Key="NeverSoftRedDim" Color="#FF8E1B22"/>
+
+    <!-- Text -->
+    <SolidColorBrush x:Key="TextPrimary" Color="#FFF5F5F7"/>
+    <SolidColorBrush x:Key="TextSecondary" Color="#FFAEAEB2"/>
+    <SolidColorBrush x:Key="TextHint" Color="#FF727276"/>
+
+    <SolidColorBrush x:Key="ChipTextSelected" Color="#FFFFFFFF"/>
+    <SolidColorBrush x:Key="ChipTextUnselected" Color="#FFC8C8CC"/>
+
+    <SolidColorBrush x:Key="RowHover" Color="#14FFFFFF"/>
+    <SolidColorBrush x:Key="RowSelected" Color="#24FFFFFF"/>
+
+</ResourceDictionary>
