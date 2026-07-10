@@ -72,6 +72,32 @@ class SearchActivity : AppCompatActivity() {
         // Populate immediately in "browse" mode; the permission callback re-runs this
         // once media/contacts access is granted so those results fill in too.
         runSearch()
+
+        showBootSplash(savedInstanceState)
+    }
+
+    /**
+     * Split-second "NeverSoft Services" boot splash. Only on a fresh launch (not on
+     * config-change/restore), it fades out after a brief delay and hands off to the
+     * real search UI. It never blocks input beyond its own lifetime.
+     */
+    private fun showBootSplash(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            binding.splashOverlay.visibility = android.view.View.GONE
+            return
+        }
+        binding.splashOverlay.visibility = android.view.View.VISIBLE
+        lifecycleScope.launch {
+            delay(SPLASH_MS)
+            binding.splashOverlay.animate()
+                .alpha(0f)
+                .setDuration(280L)
+                .withEndAction {
+                    binding.splashOverlay.visibility = android.view.View.GONE
+                    binding.splashOverlay.alpha = 1f
+                }
+                .start()
+        }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -409,5 +435,6 @@ class SearchActivity : AppCompatActivity() {
         const val EXTRA_PRIMARY = "com.neversoft.spotlight.extra.PRIMARY"
         const val EXTRA_FOCUS = "com.neversoft.spotlight.extra.FOCUS"
         private const val DEBOUNCE_MS = 220L
+        private const val SPLASH_MS = 900L
     }
 }
