@@ -1,0 +1,93 @@
+name: Desktop CI
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "desktop/**"
+      - ".github/workflows/desktop.yml"
+      - "gradle/**"
+      - "gradlew"
+      - "gradlew.bat"
+  pull_request:
+    paths:
+      - "desktop/**"
+      - ".github/workflows/desktop.yml"
+      - "gradle/**"
+      - "gradlew"
+      - "gradlew.bat"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build Windows app
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Unit tests + build
+        run: .\gradlew.bat -p desktop build --stacktrace
+
+      - name: Create distributable app image
+        run: .\gradlew.bat -p desktop createDistributable --stacktrace
+
+      - name: Zip portable app
+        shell: pwsh
+        run: |
+          Compress-Archive -Path "desktop/build/compose/binaries/main/app/Spotlight" -DestinationPath spotlight-windows.zip
+
+      - name: Upload Windows app
+        uses: actions/upload-artifact@v4
+        with:
+          name: spotlight-windows
+          path: spotlight-windows.zip
+          if-no-files-found: error
+
+  # Publishes the freshly built Windows app to a single rolling "nightly-desktop"
+  # release so the README download link always points at the latest build.
+  # Runs only for main (or a manual dispatch on main); skipped for PRs/feature pushes.
+  release:
+    name: Publish rolling Windows app
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download built app
+        uses: actions/download-artifact@v4
+        with:
+          name: spotlight-windows
+          path: dist
+
+      - name: Publish to rolling "nightly-desktop" release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: nightly-desktop
+          name: Spotlight for Windows (latest build)
+          prerelease: true
+          files: dist/spotlight-windows.zip
+          body: |
+            Auto-published portable Windows build, rebuilt on every push to `main` that touches `desktop/`.
+
+            Commit: ${{ github.sha }}
+
+            Unzip, then run `Spotlight\Spotlight.exe`. Unsigned build — if SmartScreen
+            objects, choose *More info → Run anyway*. Requires 64-bit Windows 10/11.
