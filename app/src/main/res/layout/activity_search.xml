@@ -217,44 +217,13 @@
     </FrameLayout>
     </LinearLayout>
 
-    <!-- NeverSoft Services boot splash: shown once on launch, fades away. -->
-    <LinearLayout
+    <!-- NeverSoft Services CRT boot splash: full-screen WebView shown once on
+         launch, fades away and hands off to the search UI. -->
+    <WebView
         android:id="@+id/splashOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/splash_bg"
+        android:background="@color/spotlight_black"
         android:clickable="true"
-        android:focusable="true"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="88dp"
-            android:layout_height="88dp"
-            android:background="@drawable/splash_badge"
-            android:gravity="center"
-            android:text="N"
-            android:textColor="@color/text_primary"
-            android:textSize="44sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:letterSpacing="0.03"
-            android:text="@string/brand"
-            android:textColor="@color/text_primary"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <ProgressBar
-            android:id="@+id/splashProgress"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:indeterminate="true"
-            android:indeterminateTint="@color/neversoft_red" />
-    </LinearLayout>
+        android:focusable="true" />
 </FrameLayout>
