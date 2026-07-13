@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/spotlight_black">
+
+    <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/spotlight_black"
@@ -210,4 +215,15 @@
             android:textColor="@color/text_hint"
             android:textSize="15sp" />
     </FrameLayout>
-</LinearLayout>
+    </LinearLayout>
+
+    <!-- NeverSoft Services CRT boot splash: full-screen WebView shown once on
+         launch, fades away and hands off to the search UI. -->
+    <WebView
+        android:id="@+id/splashOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/spotlight_black"
+        android:clickable="true"
+        android:focusable="true" />
+</FrameLayout>

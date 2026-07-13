@@ -11,8 +11,11 @@ import android.provider.DocumentsContract
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.webkit.JavascriptInterface
+import android.webkit.WebView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -44,6 +47,7 @@ class SearchActivity : AppCompatActivity() {
     private var selection = FilterSelection()
     private var scope = StorageScope.ALL
     private var searchJob: Job? = null
+    private var splashDismissed = false
 
     private val permissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -72,6 +76,57 @@ class SearchActivity : AppCompatActivity() {
         // Populate immediately in "browse" mode; the permission callback re-runs this
         // once media/contacts access is granted so those results fill in too.
         runSearch()
+
+        showBootSplash(savedInstanceState)
+    }
+
+    /**
+     * NeverSoft Services CRT boot splash, rendered by a full-screen WebView on top
+     * of the search UI. Only on a fresh launch (not on config-change/restore) it
+     * plays its ~2.5s boot sequence and fades out, handing off to the real search
+     * UI. The WebView calls back via [SplashBridge] when its animation finishes; a
+     * Handler fallback guarantees it never blocks the app even if JS never fires.
+     */
+    private fun showBootSplash(savedInstanceState: Bundle?) {
+        val splash = binding.splashOverlay
+        if (savedInstanceState != null) {
+            splash.visibility = View.GONE
+            splashDismissed = true
+            return
+        }
+        splash.visibility = View.VISIBLE
+        splash.setBackgroundColor(ContextCompat.getColor(this, R.color.spotlight_black))
+        splash.isVerticalScrollBarEnabled = false
+        splash.isHorizontalScrollBarEnabled = false
+        splash.settings.javaScriptEnabled = true
+        splash.addJavascriptInterface(SplashBridge(), "AndroidSplash")
+        splash.loadUrl("file:///android_asset/neversoft_splash.html")
+        // Robust fallback: dismiss even if the page's JS callback never fires.
+        splash.postDelayed({ dismissBootSplash() }, SPLASH_TIMEOUT_MS)
+    }
+
+    /** Fades the splash WebView out and removes it. Idempotent. */
+    private fun dismissBootSplash() {
+        if (splashDismissed) return
+        splashDismissed = true
+        val splash = binding.splashOverlay
+        splash.animate()
+            .alpha(0f)
+            .setDuration(280L)
+            .withEndAction {
+                splash.visibility = View.GONE
+                splash.alpha = 1f
+                splash.loadUrl("about:blank")
+            }
+            .start()
+    }
+
+    /** Bridge the WebView calls when its boot animation completes. */
+    private inner class SplashBridge {
+        @JavascriptInterface
+        fun onDone() {
+            binding.splashOverlay.post { dismissBootSplash() }
+        }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -409,5 +464,6 @@ class SearchActivity : AppCompatActivity() {
         const val EXTRA_PRIMARY = "com.neversoft.spotlight.extra.PRIMARY"
         const val EXTRA_FOCUS = "com.neversoft.spotlight.extra.FOCUS"
         private const val DEBOUNCE_MS = 220L
+        private const val SPLASH_TIMEOUT_MS = 2900L
     }
 }
