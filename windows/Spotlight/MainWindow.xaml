@@ -1,0 +1,143 @@
+<Window x:Class="NeverSoft.Spotlight.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:NeverSoft.Spotlight.Ui"
+        Title="Spotlight"
+        Width="760"
+        SizeToContent="Height"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ShowInTaskbar="False"
+        Topmost="True"
+        ResizeMode="NoResize"
+        WindowStartupLocation="Manual"
+        FontFamily="Segoe UI"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="ClearType"
+        UseLayoutRounding="True">
+
+    <Window.Resources>
+        <ui:TypeToGeometryConverter x:Key="TypeGeo"/>
+        <ui:TypeToLabelConverter x:Key="TypeLabel"/>
+        <ui:NullToVisibilityConverter x:Key="NullVis"/>
+
+        <DataTemplate x:Key="ResultTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Icon tile: real shell icon when loaded, vector glyph until then -->
+                <Border Grid.Column="0" Width="44" Height="44" CornerRadius="10"
+                        Background="{StaticResource SpotlightSurfaceVariant}" VerticalAlignment="Center">
+                    <Grid>
+                        <Path Data="{Binding Type, Converter={StaticResource TypeGeo}}"
+                              Stroke="{StaticResource TextSecondary}" StrokeThickness="1.6"
+                              Stretch="Uniform" Width="22" Height="22"
+                              HorizontalAlignment="Center" VerticalAlignment="Center"
+                              Visibility="{Binding Icon, Converter={StaticResource NullVis}, ConverterParameter=Invert}"/>
+                        <Image Source="{Binding Icon}" Width="32" Height="32"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                               RenderOptions.BitmapScalingMode="HighQuality"
+                               Visibility="{Binding Icon, Converter={StaticResource NullVis}}"/>
+                    </Grid>
+                </Border>
+
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="12,0">
+                    <TextBlock Text="{Binding Title}" Foreground="{StaticResource TextPrimary}"
+                               FontSize="15" TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Text="{Binding Subtitle}" Foreground="{StaticResource TextSecondary}"
+                               FontSize="12" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10,0,2,0">
+                    <TextBlock Text="{Binding Type, Converter={StaticResource TypeLabel}}"
+                               Foreground="{StaticResource NeverSoftRedBright}" FontSize="11"
+                               FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                    <TextBlock Text="{Binding Meta}" Foreground="{StaticResource TextHint}"
+                               FontSize="11" HorizontalAlignment="Right" Margin="0,2,0,0"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
+
+    <!-- Outer margin leaves room for the drop shadow -->
+    <Border Margin="24" CornerRadius="18"
+            Background="{StaticResource SpotlightCardFill}"
+            BorderBrush="{StaticResource SpotlightStroke}" BorderThickness="1">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="34" ShadowDepth="0" Opacity="0.65" Color="Black"/>
+        </Border.Effect>
+
+        <Grid Margin="22,18,22,20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Brand row -->
+            <Grid Grid.Row="0" Margin="2,0,2,14">
+                <TextBlock Text="SPOTLIGHT" Foreground="{StaticResource TextSecondary}"
+                           FontSize="12" FontWeight="Bold" Opacity="0.85" HorizontalAlignment="Left"/>
+                <TextBlock Text="NeverSoft Services" Foreground="{StaticResource NeverSoftRed}"
+                           FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+            </Grid>
+
+            <!-- Search bar -->
+            <Border Grid.Row="1" CornerRadius="14" Background="{StaticResource SpotlightSearchFill}"
+                    BorderBrush="{StaticResource SpotlightStroke}" BorderThickness="1" Height="58">
+                <Grid Margin="16,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Path x:Name="SearchGlyph" Grid.Column="0" Width="22" Height="22"
+                          Stroke="{StaticResource TextHint}" StrokeThickness="1.8" Stretch="Uniform"
+                          VerticalAlignment="Center"/>
+
+                    <Grid Grid.Column="1" Margin="14,0,8,0">
+                        <TextBlock x:Name="Placeholder" Text="Search your entire device"
+                                   Foreground="{StaticResource TextHint}" FontSize="22"
+                                   VerticalAlignment="Center" IsHitTestVisible="False"/>
+                        <TextBox x:Name="SearchBox" Style="{StaticResource SearchTextBox}"/>
+                    </Grid>
+
+                    <Button x:Name="ClearButton" Grid.Column="2" Content="✕" Cursor="Hand"
+                            Foreground="{StaticResource TextHint}" Background="Transparent"
+                            BorderThickness="0" FontSize="15" Width="28" Height="28"
+                            VerticalAlignment="Center" Visibility="Collapsed" Click="ClearButton_Click"/>
+                </Grid>
+            </Border>
+
+            <!-- Primary filter chips -->
+            <StackPanel x:Name="PrimaryChips" Grid.Row="2" Orientation="Horizontal" Margin="0,14,0,0"/>
+
+            <!-- Secondary filter chips -->
+            <StackPanel x:Name="SecondaryChips" Grid.Row="3" Orientation="Horizontal" Margin="0,10,0,0"/>
+
+            <!-- Status line -->
+            <TextBlock x:Name="StatusText" Grid.Row="4" Foreground="{StaticResource TextHint}"
+                       FontSize="12" Margin="2,14,0,0"/>
+
+            <!-- Results -->
+            <ListBox x:Name="ResultsList" Grid.Row="5" Margin="0,8,0,0"
+                     MaxHeight="468" Background="Transparent" BorderThickness="0"
+                     ItemContainerStyle="{StaticResource ResultItem}"
+                     ItemTemplate="{StaticResource ResultTemplate}"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     VirtualizingStackPanel.IsVirtualizing="True"
+                     VirtualizingStackPanel.VirtualizationMode="Recycling"
+                     MouseDoubleClick="ResultsList_MouseDoubleClick"/>
+        </Grid>
+    </Border>
+</Window>
